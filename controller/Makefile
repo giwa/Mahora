@@ -2,7 +2,7 @@ TARGET = controller
 SRCS = controller.cpp
 OBJS = $(SRCS:.cpp=.o)
 CC = g++
-LIBS = -lkyototycoon
+LIBS = -lkyototycoon -lreadline
 
 all: $(TARGET)
 
