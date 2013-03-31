@@ -36,22 +36,25 @@ LIB=-lpqxx -lpcap -lz -pthread -lkyototycoon
 #------------------------------------------------------
 
 .SUFFIXES:.C .H .c .o .h
+VPATH=../socket
 
 #---
 # Source Files
 #---
 
 SRC=$(shell ls *.C)
+SRC2=$(shell ls ../socket/*.C)
 HED=$(shell ls *.H)
 OBJ=$(SRC:.C=.o)
+OBJ2=PracticalSocket.o
 
 #------------------------------------------------------
 # rules
 #------------------------------------------------------
 
 all: $(TARGET)
-$(TARGET): $(OBJ)
-	$(CC) $(OPT) -o $(TARGET) $(OBJ) $(LIB)
+$(TARGET): $(OBJ) $(OBJ2)
+	$(CC) $(OPT) -o $(TARGET) $(OBJ) $(OBJ2) $(LIB)
 
 .c.o:
 	$(CC) $(OPT) -c $< $(INC)
@@ -62,7 +65,7 @@ $(TARGET): $(OBJ)
 	$(CC) $(OPT) -c $< $(INC)
 
 dep:
-	g++ -MM -MG $(SRC) >makefile.depend
+	g++ -MM -MG $(SRC) $(SRC2) >makefile.depend
 
 clean:
 	rm -f $(TARGET) $(TARGET).exe

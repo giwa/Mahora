@@ -16,7 +16,7 @@
 #include "TestRule.H"
 #include "Observer.H"
 #include "SSS.H"
-#include "PracticalSocket.h"      // For UDPSocket and SocketException
+#include "../socket/PracticalSocket.H"      // For UDPSocket and SocketException
 #include "Socket.H"      // For UDPSocket and SocketException
 
 #include <functional>

@@ -12,7 +12,7 @@
 #include <string.h>
 #include <string>
 #include <iostream>
-#include "PracticalSocket.h"      // For UDPSocket and SocketException
+#include "../socket/PracticalSocket.H"      // For UDPSocket and SocketException
 #include <cstdlib>
 #include <pcap.h>
 using namespace std;
@@ -67,15 +67,15 @@ void pcap_callback(u_char *userdata, const struct pcap_pkthdr *h, const u_char *
 
 
   try {
-	memcpy(data->sourceIP,"192.168.1.6",15);
-	data->sourcePort = sock->getLocalPort();
+	memcpy(data->src_ip,"192.168.1.6",15);
+	data->src_port = sock->getLocalPort();
 	data->sor_flg = 0;
 
 
 	  sockaddr_in addr;
     unsigned int addr_len = sizeof(addr);
 
-	cout << "src_ip sim: "<<  data->sourceIP << endl;
+	cout << "src_ip sim: "<<  data->src_ip << endl;
     // Send the string to the server
     sock->sendTo(data, data_size, serv_address, echoServPort);
 	cout << "Data have sent-------------------- " << endl;
