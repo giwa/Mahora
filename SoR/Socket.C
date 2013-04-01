@@ -112,8 +112,11 @@ void* routeFunction_Send(void * param)
 			cout << "from: " << fdata->src_ip << endl;
 			cout << "nexthop: " << router_table->GetNextHop(fdata->src_ip) << endl;
 			cout << "port: " << router_table->GetPort(fdata->src_ip) << endl;
+			if(router_table->GetUpdateFlg() != 0){
+				router_table->UpdateRoutingTable();
+			}
 			if(router_table->GetPort(fdata->src_ip) != 0){
-				sock->sendTo(fdata, sizeof(SoRData), router_table->GetNextHop(fdata->src_ip), router_table->GetPort(fdata->src_ip));
+				sock->sendTo(fdata, sizeof(SoRData), router_table->GetMapNextHop(fdata->src_ip), router_table->GetMapPort(fdata->src_ip));
 			}else{
 				cout << "Not found in routing table" << endl;
 			}

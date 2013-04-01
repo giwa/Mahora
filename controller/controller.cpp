@@ -23,6 +23,8 @@ struct RouterTableInfo{
 	int port;
 };
 
+string prefix = "rt";
+
 int UpdateRoutingTable(string serv_ip, string src_ip, string nexthop_ip, int nexthop_port){
 	RouterTableInfo *rtinfo = new RouterTableInfo;
 	char *buf;
@@ -32,12 +34,14 @@ int UpdateRoutingTable(string serv_ip, string src_ip, string nexthop_ip, int nex
 	cerr << "open error: " << db.error().name() << endl;
 	}
 
+	src_ip = prefix + src_ip;
 	memcpy(rtinfo->nexthop, nexthop_ip.c_str(), nexthop_ip.size());
 	rtinfo->nexthop[nexthop_ip.size()] = '\0';
 	rtinfo->ip_len = nexthop_ip.size();
 	rtinfo->port = nexthop_port;
 	buf = (char *)rtinfo;
 	db.set(src_ip.c_str(), src_ip.size(), buf, sizeof(RouterTableInfo));
+	db.set("updateflg", "1");
 	delete rtinfo;
 
 	if (!db.close()) {
@@ -53,6 +57,7 @@ int RemoveRoutingTable(string serv_ip, string src_ip){
 	cerr << "open error: " << db.error().name() << endl;
 	}
 
+	src_ip = prefix + src_ip;
 	db.remove(src_ip);
 
 	if (!db.close()) {
@@ -76,6 +81,7 @@ int ClearRoutingTable(string serv_ip){
 
 int ShowRoutingTable(string serv_ip){
 	RemoteDB db;
+	string chk;
 	if (!db.open(serv_ip)) {
 	cerr << "open error: " << db.error().name() << endl;
 	}
@@ -87,8 +93,14 @@ int ShowRoutingTable(string serv_ip){
 	cout << "src_ip" << "	" << "nexthop_ip" << "	" << "nexthop_port" << endl;
 	RouterTableInfo *rtinfo;
 	while (cur->get(&ckey, &cvalue, NULL, true)) {
-		rtinfo = (RouterTableInfo *)cvalue.c_str();
-		cout << ckey << "	" << rtinfo->nexthop << "	" << rtinfo->port  <<endl;
+		chk = ckey.substr(0,2);
+		if(chk == "rt"){
+			ckey = ckey.substr(2,ckey.size());
+			rtinfo = (RouterTableInfo *)cvalue.c_str();
+			cout << ckey << "	" << rtinfo->nexthop << "	" << rtinfo->port  <<endl;
+		}else{
+			cout << ckey << "	" << rtinfo->nexthop << "	" << rtinfo->port  <<endl;
+		}
 	}
 	delete cur;
 
@@ -110,7 +122,6 @@ int main(int argc, char** argv) {
     while(ptr = readline(NULL))
     {
         line = ptr;
-		//op = strtok(ptr, " ");
 		op = line.substr(0,line.find(" "));
 
 		if(!op.empty()){
@@ -119,9 +130,7 @@ int main(int argc, char** argv) {
 			if(op == "show"){
 				string ip;
 				ip = line.substr(line.find(" ") + 1);
-				//ip error process
 				if( inet_addr(ip.c_str()) != INADDR_NONE){
-					//cout << "ip: " <<  ip << endl;
 					ShowRoutingTable(ip);
 				}else{
 					cout << "input correct IP address" << endl;
@@ -171,7 +180,6 @@ int main(int argc, char** argv) {
 					next = strtok(NULL, " ");
 					if (next != NULL){
 						if(inet_addr(next) != INADDR_NONE){
-							cout << next << endl;
 							update_ip[i] = next;
 						}else{
 							error++;
@@ -187,7 +195,6 @@ int main(int argc, char** argv) {
 				next = strtok(NULL, " ");
 				if (next != NULL){
 					if(inet_addr(next) != INADDR_NONE){
-						cout << next << endl;
 						update_ip[0] = next;
 					}else{
 						error++;
@@ -208,34 +215,6 @@ int main(int argc, char** argv) {
 		}
         free(ptr);
     }
-
-
-	// create the database object
-	RemoteDB db;
-
-	// open the database
-	if (!db.open()) {
-	cerr << "open error: " << db.error().name() << endl;
-	}
-
-	string nexthop_ip,src_ip;
-	int nexthop_port;
-
-	src_ip = argv[1];
-	nexthop_ip = argv[2];
-	nexthop_port = 52000;
-	//UpdateRoutingTable(&db, src_ip, nexthop_ip, nexthop_port);
-
-	src_ip = argv[2];
-	nexthop_ip = argv[1];
-	nexthop_port = 52000;
-	//UpdateRoutingTable(&db, src_ip, nexthop_ip, nexthop_port);
-
-
-	// close the database
-	if (!db.close()) {
-		cerr << "close error: " << db.error().name() << endl;
-	}
 
 	return 0;
 }
