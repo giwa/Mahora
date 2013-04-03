@@ -20,12 +20,12 @@ using namespace kyototycoon;
 struct RouterTableInfo{
 	char nexthop[15];
 	int ip_len;
-	int port;
+	unsigned short port;
 };
 
 string prefix = "rt";
 
-int UpdateRoutingTable(string serv_ip, string src_ip, string nexthop_ip, int nexthop_port){
+int UpdateRoutingTable(string serv_ip, string src_ip, string nexthop_ip, unsigned short nexthop_port){
 	RouterTableInfo *rtinfo = new RouterTableInfo;
 	char *buf;
 
@@ -99,7 +99,7 @@ int ShowRoutingTable(string serv_ip){
 			rtinfo = (RouterTableInfo *)cvalue.c_str();
 			cout << ckey << "	" << rtinfo->nexthop << "	" << rtinfo->port  <<endl;
 		}else{
-			cout << ckey << "	" << rtinfo->nexthop << "	" << rtinfo->port  <<endl;
+			cout << ckey << "	" << cvalue <<endl;
 		}
 	}
 	delete cur;
@@ -138,7 +138,7 @@ int main(int argc, char** argv) {
 			}else if(op == "update"){
 				error = 0;
 				string ip;
-				int nexthop_port;
+				unsigned short nexthop_port;
 
 				next = strtok(ptr, " ");
 				for(int i = 0; i <= 2; i++){

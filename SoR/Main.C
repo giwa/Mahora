@@ -67,7 +67,7 @@ if(argc != 2){
 	rule_loader_file->Proc();
 #endif
 
-	rule_pool->ShowRules();
+//	rule_pool->ShowRules();
 
 	router_table = new RouterTable;
 	cout << "finish instance" << endl;

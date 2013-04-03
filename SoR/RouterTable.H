@@ -29,8 +29,8 @@ class RouterTable{
 		unsigned short GetMapPort(string ip);
 		int GetUpdateFlg();
 		int SetUpdateFlg(int flg);
-		int  InsertRoutingTable(kyototycoon::RemoteDB *rtable, string src_ip, string nexthop_ip, int nexthop_port);
-		int  InsertMapRoutingTable(string src_ip, string nexthop_ip, int nexthop_port);
+		int  InsertRoutingTable(kyototycoon::RemoteDB *rtable, string src_ip, string nexthop_ip, unsigned short nexthop_port);
+		int  InsertMapRoutingTable(string src_ip, string nexthop_ip, unsigned short nexthop_port);
 		int UpdateRoutingTable();
         ~RouterTable();
 };

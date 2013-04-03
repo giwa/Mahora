@@ -21,6 +21,7 @@ string serv_address;
 char* port_num;
 size_t cnt = 0;
 
+
 UDPSocket *sock = new UDPSocket(52000);
 
 /*
@@ -37,6 +38,13 @@ void pcap_callback(u_char *userdata, const struct pcap_pkthdr *h, const u_char *
 
 	cnt++;
 	PacketCnt *pcnt;
+	int packet_size = sizeof(struct pcap_pkthdr) + h->caplen;
+
+	pcnt = (PacketCnt *)malloc(packet_size);
+	memcpy(&(pcnt->pcap_hdr), h, sizeof(struct pcap_pkthdr));
+	memcpy(pcnt->pcap_pkt, p , h->caplen);
+
+
 	SoRData *data = new SoRData;
 	int data_size = sizeof(struct pcap_pkthdr) + h->caplen;
 	data->packet_id = cnt;
@@ -62,36 +70,80 @@ void pcap_callback(u_char *userdata, const struct pcap_pkthdr *h, const u_char *
 //	cout << "src_ip: " << inet_ntoa(src_ip)  << endl;
 	cout << "content: "<<  data->pcap_pkt << endl;
 
-	//sleep(2);
-  unsigned short echoServPort = Socket::resolveService(port_num, "udp");
+	unsigned char* l4_header;		// pointer to L4(TCP/UDP) header
+	unsigned char* content;			// pointer to payload begin
+	unsigned char* l7_content;		// pointer to Layer7 content begin
+
+	unsigned int protocol;			// Transport Protocol(ex: TCP:6)
+	bool ack;						// TCP ACK flag
+	bool fin;						// TCP FIN flag
+	bool syn;						// TCP SYN flag
+	bool urg;						// TCP URG flag
+	bool psh;						// TCP PUSH flag
+	bool rst;						// TCP RESET flag
+	unsigned int src_port;
+	unsigned int dst_port;
+	unsigned int seq_no;
+	struct tcphdr* tcp_header;		// pointer to TCP header structure
+
+	packet = (unsigned char *)malloc(pcnt->pcap_hdr.caplen);
+	memcpy(packet, pcnt->pcap_pkt, pcnt->pcap_hdr.caplen);
+
+	l3_header = packet + sizeof(struct ether_header); //IP header
+	ip_header = (struct ip *)l3_header;
+	src_ip = ip_header->ip_src;
+	dst_ip = ip_header->ip_dst;
+	protocol = ip_header->ip_p;
+
+	if(protocol == IPPROTO_TCP){
+		//PACKET_DEBUG(RED cout << "TCP Packet!" << endl ;RESET);
+		tcp_header = (struct tcphdr *)l4_header;
+		src_port = ntohs(tcp_header->source);
+		dst_port = ntohs(tcp_header->dest);
+		seq_no = ntohl(tcp_header->seq);
+		ack = tcp_header->ack;
+		fin = tcp_header->fin;
+		syn = tcp_header->syn;
+		urg = tcp_header->urg;
+		psh = tcp_header->psh;
+		rst = tcp_header->rst;
+	}
 
 
-  try {
-	memcpy(data->src_ip,"192.168.1.6",15);
-	data->src_port = sock->getLocalPort();
-	data->sor_flg = 0;
 
 
-	  sockaddr_in addr;
-    unsigned int addr_len = sizeof(addr);
 
-	cout << "src_ip sim: "<<  data->src_ip << endl;
-    // Send the string to the server
-    sock->sendTo(data, data_size, serv_address, echoServPort);
-	cout << "Data have sent-------------------- " << endl;
-    // Receive a response
-    int respStringLen;                  // Length of received response
-    respStringLen = sock->recv(data, sizeof(SoRData));
-	cout << "Data have recieved-------------------- " << endl;
-	delete data;
+
+
+unsigned short echoServPort = Socket::resolveService(port_num, "udp");
+
+
+try {
+memcpy(data->src_ip,"192.168.1.6",15);
+data->src_port = sock->getLocalPort();
+data->sor_flg = 0;
+
+
+  sockaddr_in addr;
+unsigned int addr_len = sizeof(addr);
+
+cout << "src_ip sim: "<<  data->src_ip << endl;
+// Send the string to the server
+sock->sendTo(data, data_size, serv_address, echoServPort);
+cout << "Data have sent-------------------- " << endl;
+// Receive a response
+int respStringLen;                  // Length of received response
+respStringLen = sock->recv(data, sizeof(SoRData));
+cout << "Data have recieved-------------------- " << endl;
+delete data;
 //	free(packet);
 
-    // Destructor closes the socket
+// Destructor closes the socket
 
-  } catch (SocketException &e) {
-    cerr << e.what() << endl;
-    exit(1);
-  }
+} catch (SocketException &e) {
+cerr << e.what() << endl;
+exit(1);
+}
 
 }
 

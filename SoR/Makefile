@@ -79,7 +79,7 @@ tar:
 	tar cvzf $(TARGET).tar.gz *.cc *.h makefile
 
 trunc:
-	psql -h localhost -Utest testdb -c "truncate table save_stream; truncate table save_result; select setval('save_result_id_seq',1);select setval('save_data_id_seq',1);"
+	psql -h 192.168.1.254 -Utest test -c "truncate table save_stream; truncate table save_result; select setval('save_result_id_seq',1);select setval('save_data_id_seq',1);"
 
 debug:
 	make trunc

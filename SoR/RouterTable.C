@@ -41,7 +41,7 @@ char *itoa( int value, char buff[], int radix )
 
 
 
-int RouterTable::InsertRoutingTable(kyototycoon::RemoteDB *rtable, string src_ip, string nexthop_ip, int nexthop_port){
+int RouterTable::InsertRoutingTable(kyototycoon::RemoteDB *rtable, string src_ip, string nexthop_ip, unsigned short nexthop_port){
 	RouterTableInfo *rtinfo = new RouterTableInfo;
 	char *buf;
 	//cout << "------------------------------" << endl;
@@ -58,7 +58,7 @@ int RouterTable::InsertRoutingTable(kyototycoon::RemoteDB *rtable, string src_ip
 }
 
 
-int RouterTable::InsertMapRoutingTable(string src_ip, string nexthop_ip, int nexthop_port){
+int RouterTable::InsertMapRoutingTable(string src_ip, string nexthop_ip, unsigned short nexthop_port){
 	RouterTableInfo *rtinfo = new RouterTableInfo;
 
 	src_ip = prefix + src_ip;
@@ -86,7 +86,7 @@ RouterTable::RouterTable(){
 
 // initialize
 	string nexthop_ip,src_ip;
-	int nexthop_port;
+	unsigned short nexthop_port;
 
 	SetUpdateFlg(0);
 
@@ -104,10 +104,8 @@ RouterTable::RouterTable(){
 
 	//cout << "src_ip: " << GetMapPort(src_ip) << endl;
 	//cout << "0: " << GetMapPort("fdsfa") << endl;
-	
 
 	//cout << "src_ip: " << src_ip << ":" << map_routing_table[src_ip]->nexthop << endl;
-
 
 }
 
@@ -120,7 +118,7 @@ RouterTable::~RouterTable(){
 }
 
 string RouterTable::GetNextHop(string ip){
-	RouterTableInfo *rtinfo;
+	RouterTableInfo *rtinfo = new RouterTableInfo;
 	char *buf;
 	size_t num;
 
@@ -130,13 +128,13 @@ string RouterTable::GetNextHop(string ip){
 		return "0";
 	}
 	rtinfo = (RouterTableInfo *)buf;
-	rtinfo->nexthop[rtinfo->ip_len ]='\0';
+	rtinfo->nexthop[rtinfo->ip_len]='\0';
 
 	return rtinfo->nexthop;
 }
 
 string RouterTable::GetMapNextHop(string ip){
-	RouterTableInfo *rtinfo;
+	RouterTableInfo *rtinfo = new RouterTableInfo;
 	char *buf;
 	size_t num;
 
@@ -145,7 +143,7 @@ string RouterTable::GetMapNextHop(string ip){
 	if(rtinfo == NULL){
 		return "0";
 	}
-	rtinfo->nexthop[rtinfo->ip_len ]='\0';
+	rtinfo->nexthop[rtinfo->ip_len]='\0';
 
 	return rtinfo->nexthop;
 }
@@ -208,11 +206,8 @@ int RouterTable::UpdateRoutingTable(){
 
 	cur->jump();
 	while(cur->get(&key, &val, NULL, true)){
-		chk = key.substr(0,2);
-		if(chk == "rt"){
-			rtinfo = (RouterTableInfo *)val.c_str();
-			map_routing_table[key] = rtinfo;
-		}
+		rtinfo = (RouterTableInfo *)val.c_str();
+		map_routing_table[key] = rtinfo;
 	}
 	SetUpdateFlg(0);
 

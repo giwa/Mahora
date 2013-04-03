@@ -60,6 +60,7 @@ void StreamRebuild::SearchStream(Packet * pkt){
 
 	if(pkt->GetSyn() && !pkt->GetAck()){
 		ST_REBUILD_DEBUG( BLUE cout << "SYN detected. New tcp connection entry created." << endl; RESET);
+		ST_REBUILD_DEBUG( BLUE cout << "======================================================" << endl; RESET);
 		//If packet containes SYN, create new stream entry.
 		tcp_conn = new TcpConn(port_map_key, pkt);
 		return;

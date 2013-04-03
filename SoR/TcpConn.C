@@ -38,7 +38,7 @@ TcpConn::~TcpConn(){
 
 	tcp_conn_pool->RemoveTcpConnIt(tcp_conn_pool_it);
 
-//	cout << "TcpConn Destructor!! stream num: " << stream_list.size() << endl;
+	cout << "TcpConn Destructor!! stream num: " << stream_list.size() << endl;
 
 	if(stream_list.size() !=0){
 		list<Stream *>::iterator it= stream_list.begin();
@@ -58,7 +58,7 @@ TcpConn::~TcpConn(){
 			it = it2;
 		}
 	}
-//	cout << "TcpConn Destructed"<< endl;
+	cout << "TcpConn Destructed"<< endl;
 
 }
 
