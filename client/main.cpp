@@ -86,7 +86,7 @@ void pcap_callback(u_char *userdata, const struct pcap_pkthdr *h, const u_char *
 	unsigned int seq_no;
 	struct tcphdr* tcp_header;		// pointer to TCP header structure
 
-	packet = (unsigned char *)malloc(pcnt->pcap_hdr.caplen);
+	//packet = (unsigned char *)malloc(pcnt->pcap_hdr.caplen);
 	memcpy(packet, pcnt->pcap_pkt, pcnt->pcap_hdr.caplen);
 
 	l3_header = packet + sizeof(struct ether_header); //IP header
