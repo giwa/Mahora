@@ -57,10 +57,10 @@ void pcap_callback(u_char *userdata, const struct pcap_pkthdr *h, const u_char *
 	packet = (unsigned char *)malloc(h->caplen);
 	memcpy(packet, data->pcap_pkt, h->caplen);
 
-	l3_header = packet  + sizeof(struct ether_header); //IP header
-	ip_header = (struct ip *)l3_header;
-	src_ip = ip_header->ip_src;
-	dst_ip = ip_header->ip_dst;
+	//l3_header = packet  + sizeof(struct ether_header); //IP header
+	//ip_header = (struct ip *)l3_header;
+	//src_ip = ip_header->ip_src;
+	//dst_ip = ip_header->ip_dst;
 //	cout << "src_ip: " << inet_ntoa(src_ip) << endl;
 //	cout << "dst_ip: " << inet_ntoa(dst_ip) << endl;
 
@@ -94,6 +94,8 @@ void pcap_callback(u_char *userdata, const struct pcap_pkthdr *h, const u_char *
 	src_ip = ip_header->ip_src;
 	dst_ip = ip_header->ip_dst;
 	protocol = ip_header->ip_p;
+
+	l4_header = l3_header + ip_header->ip_hl*4; //TCP/UDP header
 
 	if(protocol == IPPROTO_TCP){
 		//PACKET_DEBUG(RED cout << "TCP Packet!" << endl ;RESET);
