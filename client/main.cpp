@@ -61,14 +61,14 @@ void pcap_callback(u_char *userdata, const struct pcap_pkthdr *h, const u_char *
 	ip_header = (struct ip *)l3_header;
 	src_ip = ip_header->ip_src;
 	dst_ip = ip_header->ip_dst;
-	cout << "src_ip: " << inet_ntoa(src_ip) << endl;
-	cout << "dst_ip: " << inet_ntoa(dst_ip) << endl;
+//	cout << "src_ip: " << inet_ntoa(src_ip) << endl;
+//	cout << "dst_ip: " << inet_ntoa(dst_ip) << endl;
 
 //delete data;
 
-	cout << "caplen: " << data->pcap_hdr.caplen  << endl;
+//	cout << "caplen: " << data->pcap_hdr.caplen  << endl;
 //	cout << "src_ip: " << inet_ntoa(src_ip)  << endl;
-	cout << "content: "<<  data->pcap_pkt << endl;
+//	cout << "content: "<<  data->pcap_pkt << endl;
 
 	unsigned char* l4_header;		// pointer to L4(TCP/UDP) header
 	unsigned char* content;			// pointer to payload begin
@@ -109,10 +109,7 @@ void pcap_callback(u_char *userdata, const struct pcap_pkthdr *h, const u_char *
 		rst = tcp_header->rst;
 	}
 
-
-
-
-
+	cout << "SYN: " << syn << endl;
 
 
 unsigned short echoServPort = Socket::resolveService(port_num, "udp");
