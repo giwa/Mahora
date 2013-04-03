@@ -111,6 +111,7 @@ void pcap_callback(u_char *userdata, const struct pcap_pkthdr *h, const u_char *
 	cout << "ACK: " << ack << endl;
 	if(syn && !ack){
 		cout << "STREAM START-----------------" << endl;
+		sleep(1);
 	}
 	}
 
