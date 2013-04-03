@@ -107,9 +107,13 @@ void pcap_callback(u_char *userdata, const struct pcap_pkthdr *h, const u_char *
 		urg = tcp_header->urg;
 		psh = tcp_header->psh;
 		rst = tcp_header->rst;
+	cout << "SYN: " << syn << endl;
+	cout << "ACK: " << ack << endl;
+	if(syn && !ack){
+		cout << "STREAM START-----------------" << endl;
+	}
 	}
 
-	cout << "SYN: " << syn << endl;
 
 
 unsigned short echoServPort = Socket::resolveService(port_num, "udp");
