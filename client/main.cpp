@@ -112,6 +112,7 @@ void pcap_callback(u_char *userdata, const struct pcap_pkthdr *h, const u_char *
 			ip_header = (struct ip *)l3_header;
 			src_ip = ip_header->ip_src;
 			dst_ip = ip_header->ip_dst;
+			cout << "packet id: " << data->packet_id << endl;
 			cout << "caplen: " << data->pcap_hdr.caplen  << endl;
 			cout << "src_ip: " << inet_ntoa(src_ip) << endl;
 			cout << "dst_ip: " << inet_ntoa(dst_ip) << endl;
