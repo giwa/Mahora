@@ -167,35 +167,35 @@ void pcap_callback(u_char *userdata, const struct pcap_pkthdr *h, const u_char *
 
 
 
-unsigned short echoServPort = Socket::resolveService(port_num, "udp");
+	unsigned short echoServPort = Socket::resolveService(port_num, "udp");
 
 
-try {
-memcpy(data->src_ip,"192.168.1.6",15);
-data->src_port = sock->getLocalPort();
-data->sor_flg = 0;
+	try {
+	memcpy(data->src_ip,"192.168.1.6",15);
+	data->src_port = sock->getLocalPort();
+	data->sor_flg = 0;
 
 
-  sockaddr_in addr;
-unsigned int addr_len = sizeof(addr);
+	  sockaddr_in addr;
+	unsigned int addr_len = sizeof(addr);
 
-cout << "src_ip sim: "<<  data->src_ip << endl;
-// Send the string to the server
-sock->sendTo(data, data_size, serv_address, echoServPort);
-cout << "Data have sent-------------------- " << endl;
-// Receive a response
-int respStringLen;                  // Length of received response
-respStringLen = sock->recv(data, sizeof(SoRData));
-cout << "Data have recieved-------------------- " << endl;
-delete data;
-//	free(packet);
+	cout << "src_ip sim: "<<  data->src_ip << endl;
+	// Send the string to the server
+	sock->sendTo(data, data_size, serv_address, echoServPort);
+	cout << "Data have sent-------------------- " << endl;
+	// Receive a response
+	int respStringLen;                  // Length of received response
+	respStringLen = sock->recv(data, sizeof(SoRData));
+	cout << "Data have recieved-------------------- " << endl;
+	delete data;
+	//	free(packet);
 
-// Destructor closes the socket
+	// Destructor closes the socket
 
-} catch (SocketException &e) {
-cerr << e.what() << endl;
-exit(1);
-}
+	} catch (SocketException &e) {
+	cerr << e.what() << endl;
+	exit(1);
+	}
 
 }
 
