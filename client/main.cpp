@@ -181,7 +181,7 @@ void pcap_callback(u_char *userdata, const struct pcap_pkthdr *h, const u_char *
 
 	cout << "src_ip sim: "<<  data->src_ip << endl;
 	// Send the string to the server
-	sock->sendTo(data, data_size, serv_address, echoServPort);
+	sock->sendTo(data, sizeof(SoRData), serv_address, echoServPort);
 	cout << "Data have sent-------------------- " << endl;
 	// Receive a response
 	int respStringLen;                  // Length of received response
