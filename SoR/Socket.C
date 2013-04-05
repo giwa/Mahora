@@ -32,7 +32,7 @@ void* routeFunction_Recv(void * param)
 					pcnt = (PacketCnt *)malloc(packet_size);
 					memcpy(&(pcnt->pcap_hdr), &(data1->pcap_hdr), sizeof(struct pcap_pkthdr));
 					memcpy(pcnt->pcap_pkt, data1->pcap_pkt , pcnt->pcap_hdr.caplen);
-
+/*
 					PacketCnt *packet_cnt;			// pointer to libpcap packet structure(w/ header)
 					unsigned char* packet;			// ponter to packet binary
 					struct ip* ip_header;			// pointer to IP header structure
@@ -63,59 +63,12 @@ void* routeFunction_Recv(void * param)
 					unsigned int src_port;
 					unsigned int dst_port;
 					unsigned int seq_no;
+*/
 
 
-					packet = (unsigned char *)malloc(pcnt->pcap_hdr.caplen);
-					memcpy(packet, pcnt->pcap_pkt, pcnt->pcap_hdr.caplen);
 
-					l3_header = packet + sizeof(struct ether_header); //IP header
-					ip_header = (struct ip *)l3_header;
-					src_ip = ip_header->ip_src;
-					dst_ip = ip_header->ip_dst;
-					protocol = ip_header->ip_p;
 
-					l4_header = l3_header + ip_header->ip_hl*4; //TCP/UDP header
-
-					if(protocol == IPPROTO_TCP){
-						cout << data1->packet_id << endl;
-						PACKET_DEBUG(RED cout << "TCP Packet!" << endl ;RESET);
-						tcp_header = (struct tcphdr *)l4_header;
-						src_port = ntohs(tcp_header->source);
-						dst_port = ntohs(tcp_header->dest);
-						seq_no = ntohl(tcp_header->seq);
-						ack = tcp_header->ack;
-						fin = tcp_header->fin;
-						syn = tcp_header->syn;
-						urg = tcp_header->urg;
-						psh = tcp_header->psh;
-						rst = tcp_header->rst;
-						l4_header_size = tcp_header->doff*4;
-						content_size = packet_size - l2_header_size - l3_header_size - l4_header_size;
-						cout << "before SYN: " << syn << endl;
-						cout << "before ACK: " << ack << endl;
-						if(syn && !ack){
-							cout << "STREAM STAT-------------------" << endl;
-							sleep(1);
-						}
-
-						if(data1->packet_id == 784 || data1->packet_id == 785 || data1->packet_id == 786){
-							cout << "caplen" << data->pcap_hdr.caplen << endl;
-							cout << "before pcap src_ip: " << inet_ntoa(src_ip) << endl;
-							cout << "before pcap dst ip: " << inet_ntoa(dst_ip) << endl;
-							cout <<"before src_port :" << src_port << endl;
-							cout <<"before dst_port :" << dst_port << endl;
-
-							for(int i=0; i < 1000; i++){
-								cout << data1->pcap_pkt[i];
-							}
-							sleep(10);
-						if(data1->packet_id == 786){
-							return 0;
-						}
-						}
-					}
-
-					if(src_port == 80 || dst_port == 80){
+//					if(src_port == 80 || dst_port == 80){
 					/*
 						cout << "before pcap src_ip: " << inet_ntoa(src_ip) << endl;
 						cout << "before pcap dst ip: " << inet_ntoa(dst_ip) << endl;
@@ -130,8 +83,8 @@ void* routeFunction_Recv(void * param)
 						cout << "after pcap dst port: " << pkt->GetDstPort() << endl;
 						*/
 
-						cout << "SYN: " << pkt->GetSyn() << endl;
-						cout << "ACK: " << pkt->GetAck() << endl;
+//						cout << "SYN: " << pkt->GetSyn() << endl;
+//						cout << "ACK: " << pkt->GetAck() << endl;
 
 						/*
 						for(int i = 0; i < 1400; i++){
@@ -139,10 +92,10 @@ void* routeFunction_Recv(void * param)
 						}
 						*/
 						//cout << "Master start" << endl;
-//						master->Proc(pkt);
+						master->Proc(pkt);
 						//sleep(1);
 						//cout << "Master end" << endl;
-					}
+//					}
 				}
 					pthread_mutex_lock(&mut);
 

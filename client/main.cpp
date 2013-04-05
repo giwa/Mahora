@@ -58,112 +58,8 @@ void pcap_callback(u_char *userdata, const struct pcap_pkthdr *h, const u_char *
 	data->pkt_len = data_size;
 	cout << "Packet ID: " << cnt << endl;
 
-	timestamp = data->pcap_hdr.ts;
-	packet = (unsigned char *)malloc(h->caplen);
-	packet2 = (unsigned char *)malloc(h->caplen);
-	//memcpy(packet, data->pcap_pkt, h->caplen);
 
-
-//delete data;
-
-//	cout << "caplen: " << data->pcap_hdr.caplen  << endl;
-//	cout << "src_ip: " << inet_ntoa(src_ip)  << endl;
-//	cout << "content: "<<  data->pcap_pkt << endl;
-
-	unsigned char* l4_header;		// pointer to L4(TCP/UDP) header
-	unsigned char* l4_header2;		// pointer to L4(TCP/UDP) header
-	unsigned char* content;			// pointer to payload begin
-	unsigned char* l7_content;		// pointer to Layer7 content begin
-
-	unsigned int protocol;			// Transport Protocol(ex: TCP:6)
-	unsigned int protocol2;			// Transport Protocol(ex: TCP:6)
-	bool ack;						// TCP ACK flag
-	bool fin;						// TCP FIN flag
-	bool syn;						// TCP SYN flag
-	bool urg;						// TCP URG flag
-	bool psh;						// TCP PUSH flag
-	bool rst;						// TCP RESET flag
-	unsigned int src_port;
-	unsigned int dst_port;
-	unsigned int seq_no;
 	struct tcphdr* tcp_header;		// pointer to TCP header structure
-
-	//packet = (unsigned char *)malloc(pcnt->pcap_hdr.caplen);
-	memcpy(packet, pcnt->pcap_pkt, pcnt->pcap_hdr.caplen);
-	memcpy(packet2, pcnt->pcap_pkt, pcnt->pcap_hdr.caplen);
-
-	l3_header = packet + sizeof(struct ether_header); //IP header
-	ip_header = (struct ip *)l3_header;
-	src_ip = ip_header->ip_src;
-	dst_ip = ip_header->ip_dst;
-	protocol = ip_header->ip_p;
-
-	l4_header = l3_header + ip_header->ip_hl*4; //TCP/UDP header
-
-	l3_header2 = packet2 + sizeof(struct ether_header); //IP header
-	ip_header2 = (struct ip *)l3_header2;
-	src_ip2 = ip_header2->ip_src;
-	dst_ip2 = ip_header2->ip_dst;
-	protocol2 = ip_header2->ip_p;
-
-	l4_header2 = l3_header + ip_header->ip_hl*4; //TCP/UDP header
-	if(protocol2 == IPPROTO_TCP){
-	cout << "packet2--------------------------"<< endl;
-		tcp_header = (struct tcphdr *)l4_header;
-		src_port = ntohs(tcp_header->source);
-		dst_port = ntohs(tcp_header->dest);
-		seq_no = ntohl(tcp_header->seq);
-		ack = tcp_header->ack;
-		fin = tcp_header->fin;
-		syn = tcp_header->syn;
-		urg = tcp_header->urg;
-		psh = tcp_header->psh;
-		rst = tcp_header->rst;
-		cout << "SYN: " << syn << endl;
-		cout << "ACK: " << ack << endl;
-		cout << "src_ip2: " << inet_ntoa(src_ip2) << endl;
-		cout << "dst_ip2: " << inet_ntoa(dst_ip2) << endl;
-	}
-
-	if(protocol == IPPROTO_TCP){
-		//PACKET_DEBUG(RED cout << "TCP Packet!" << endl ;RESET);
-		tcp_header = (struct tcphdr *)l4_header;
-		src_port = ntohs(tcp_header->source);
-		dst_port = ntohs(tcp_header->dest);
-		seq_no = ntohl(tcp_header->seq);
-		ack = tcp_header->ack;
-		fin = tcp_header->fin;
-		syn = tcp_header->syn;
-		urg = tcp_header->urg;
-		psh = tcp_header->psh;
-		rst = tcp_header->rst;
-	cout << "SYN: " << syn << endl;
-	cout << "ACK: " << ack << endl;
-	if(syn && !ack){
-		cout << "STREAM START-----------------" << endl;
-		if(cnt == 785){
-			l3_header = packet  + sizeof(struct ether_header); //IP header
-			ip_header = (struct ip *)l3_header;
-			src_ip = ip_header->ip_src;
-			dst_ip = ip_header->ip_dst;
-			cout << "packet id: " << data->packet_id << endl;
-			cout << "caplen: " << data->pcap_hdr.caplen  << endl;
-			cout << "src_ip: " << inet_ntoa(src_ip) << endl;
-			cout << "dst_ip: " << inet_ntoa(dst_ip) << endl;
-			cout << "src_port" << src_port << endl;
-			cout << "dst_port" << dst_port << endl;
-			for(int i = 0; i < 1000; i++){
-				printf("%c", pcnt->pcap_pkt[i]);
-			}
-			cout << "data-----------------" << endl;
-			cout << "data-----------------" << endl;
-			for(int i = 0; i < 1000; i++){
-				printf("%c", pcnt->pcap_pkt[i]);
-			}
-		}
-		sleep(1);
-	}
-	}
 
 
 
@@ -174,7 +70,6 @@ void pcap_callback(u_char *userdata, const struct pcap_pkthdr *h, const u_char *
 	memcpy(data->src_ip,"192.168.1.6",15);
 	data->src_port = sock->getLocalPort();
 	data->sor_flg = 0;
-
 
 	  sockaddr_in addr;
 	unsigned int addr_len = sizeof(addr);
