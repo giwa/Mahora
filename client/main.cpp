@@ -115,12 +115,12 @@ void pcap_callback(u_char *userdata, const struct pcap_pkthdr *h, const u_char *
 		cout << "STREAM START-----------------" << endl;
 		if(cnt == 785){
 			for(int i = 0; i < 1500; i++){
-				printf("%s", pcnt->pcap_pkt[i]);
+				printf("%c", pcnt->pcap_pkt[i]);
 			}
 		
 			cout << "data-----------------" << endl;
 			for(int i = 0; i < 1500; i++){
-				printf("%s", pcnt->pcap_pkt[i]);
+				printf("%c", pcnt->pcap_pkt[i]);
 			}
 		}
 		sleep(1);
