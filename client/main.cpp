@@ -44,7 +44,7 @@ void pcap_callback(u_char *userdata, const struct pcap_pkthdr *h, const u_char *
 	cnt++;
 	PacketCnt *pcnt;
 	int packet_size = sizeof(struct pcap_pkthdr) + h->caplen;
-
+	cout << h->caplen << endl;
 	pcnt = (PacketCnt *)malloc(packet_size);
 	memcpy(&(pcnt->pcap_hdr), h, sizeof(struct pcap_pkthdr));
 	memcpy(pcnt->pcap_pkt, p , h->caplen);
