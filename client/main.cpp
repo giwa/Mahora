@@ -121,12 +121,14 @@ int main(int argc,char **argv)
 	pcap_t *pd = NULL;
 	cout << argv[1] << endl;
 	pd = pcap_open_offline(argv[3], ebuf);
-
-    if (pcap_loop(pd, iterate, pcap_callback, NULL) < 0) {
+	 struct timeval s, e;
+	gettimeofday(&s, NULL);
+	if (pcap_loop(pd, iterate, pcap_callback, NULL) < 0) {
 		(void)fprintf(stderr, "pcap_loop: error occurred\n");
 	exit(1);
     }
-
+	gettimeofday(&e, NULL);
+	printf("time = %lf\n", (e.tv_sec - s.tv_sec) + (e.tv_usec - s.tv_usec)*1.0E-6);
     pcap_close(pd);
 
 

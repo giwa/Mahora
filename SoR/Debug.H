@@ -25,15 +25,15 @@
 #define DEBUG_BEGIN(level) if(level <= config["debuglevel"]){ YELLOW
 #define DEBUG_END cout << flush; RESET }
 
-#define ST_REBUILD_DEBUG_EN
-#define PACKET_DEBUG_EN
-#define MASTER_DEBUG_EN
-#define MPF_DEBUG_EN
-#define OBSERVER_DEBUG_EN
-#define ERROR_DEBUG_EN
-#define HTTP_DEBUG_EN
-
-#define HOGE cout << "hoge" << endl;
+//#define ST_REBUILD_DEBUG_EN
+//#define PACKET_DEBUG_EN
+//#define MASTER_DEBUG_EN
+//#define MPF_DEBUG_EN
+//#define OBSERVER_DEBUG_EN
+//#define ERROR_DEBUG_EN
+//#define HTTP_DEBUG_EN
+//
+//#define HOGE cout << "hoge" << endl;
 
 #ifdef ERROR_DEBUG_EN
 #define ERROR_DEBUG(x)  x ;
