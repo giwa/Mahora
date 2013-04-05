@@ -32,7 +32,7 @@
 #include <string.h>
 #include <string>
 #include <iostream>
-#include "PracticalSocket.h"      // For UDPSocket and SocketException
+#include "../socket/PracticalSocket.H"      // For UDPSocket and SocketException
 #include <cstdlib>
 
 using namespace std;
@@ -58,7 +58,7 @@ int main(int argc, char *argv[]) {
     for (;;) {  // Run forever
       // Block until receive message from a client
       recvMsgSize = sock.recvFrom(data, sizeof(SoRData), sourceAddress, sourcePort);
-	  cout << "src IP " << data->src_ip << endl;
+//	  cout << "src IP " << data->src_ip << endl;
 	  string server_ip = "192.168.1.2";
 	  memcpy(data->src_ip, server_ip.c_str() , server_ip.size());
 	  data->src_ip[server_ip.size()] = '\0';
@@ -66,10 +66,10 @@ int main(int argc, char *argv[]) {
 
 
 
-		cout << "PacketID" << data->packet_id << endl;
-		cout << "IP: " << sourceAddress << "	" << "Port: " << sourcePort << endl;
+		cout << "PacketID: " << data->packet_id << endl;
+//		cout << "IP: " << sourceAddress << "	" << "Port: " << sourcePort << endl;
       sock.sendTo(data, sizeof(SoRData), sourceAddress, sourcePort);
-	  cout << "send" << endl;
+//	  cout << "send" << endl;
     }
   } catch (SocketException &e) {
     cerr << e.what() << endl;

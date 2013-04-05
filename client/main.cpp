@@ -74,14 +74,14 @@ void pcap_callback(u_char *userdata, const struct pcap_pkthdr *h, const u_char *
 	  sockaddr_in addr;
 	unsigned int addr_len = sizeof(addr);
 
-	cout << "src_ip sim: "<<  data->src_ip << endl;
+//	cout << "src_ip sim: "<<  data->src_ip << endl;
 	// Send the string to the server
 	sock->sendTo(data, sizeof(SoRData), serv_address, echoServPort);
-	cout << "Data have sent-------------------- " << endl;
+//	cout << "Data have sent-------------------- " << endl;
 	// Receive a response
 	int respStringLen;                  // Length of received response
 	respStringLen = sock->recv(data, sizeof(SoRData));
-	cout << "Data have recieved-------------------- " << endl;
+//	cout << "Data have recieved-------------------- " << endl;
 	delete data;
 	//	free(packet);
 
