@@ -115,6 +115,8 @@ void pcap_callback(u_char *userdata, const struct pcap_pkthdr *h, const u_char *
 			cout << "caplen: " << data->pcap_hdr.caplen  << endl;
 			cout << "src_ip: " << inet_ntoa(src_ip) << endl;
 			cout << "dst_ip: " << inet_ntoa(dst_ip) << endl;
+			cout << "src_port" << src_port << endl;
+			cout << "dst_port" << dst_port << endl;
 			for(int i = 0; i < 1500; i++){
 				printf("%c", pcnt->pcap_pkt[i]);
 			}
