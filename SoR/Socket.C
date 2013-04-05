@@ -105,7 +105,7 @@ void* routeFunction_Recv(void * param)
 							cout <<"before src_port :" << src_port << endl;
 							cout <<"before dst_port :" << dst_port << endl;
 
-							for(int i=0; i < 1500; i++){
+							for(int i=0; i < 1000; i++){
 								cout << data1->pcap_pkt[i];
 							}
 							sleep(10);
