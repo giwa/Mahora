@@ -59,7 +59,7 @@ struct SoRData{
 	dMType type;
 	double packetGenTime;
 	struct pcap_pkthdr pcap_hdr;
-	u_char pcap_pkt[1000];
+	u_char pcap_pkt[1500];
 };
 
 struct SoRSimHeader{
