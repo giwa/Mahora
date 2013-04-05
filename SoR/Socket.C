@@ -18,18 +18,20 @@ void* routeFunction_Recv(void * param)
 			unsigned short sourcePort;        // Port of datagram source
 			PacketCnt *pcnt;
 			struct SoRData *data = new SoRData;// = (struct SoRData*)malloc(sizeof(struct SoRData));
+			struct SoRData *data1 = new SoRData;// = (struct SoRData*)malloc(sizeof(struct SoRData));
 			for (;;) {  // Run forever
 				// Block until receive message from a client
 					recvMsgSize = sock->recvFrom(data, sizeof(SoRData), sourceAddress, sourcePort);
+					memcpy(data1, data, sizeof(SoRData));
 //					cout << "Recive---------------------" << endl;
 //					cout << "packetID: " << "	"  << "caplen: " << "	"  <<"content: " << "	"  << "sor_flg: " << "	"  << endl;
 //					 cout << data->packet_id << "	" << data->pcap_hdr.caplen << "	"<< data->pcap_pkt << "	" << data->sor_flg << endl;
 
-				if(data->sor_flg == 0){
-					int packet_size = data->pcap_hdr.caplen + sizeof(PacketCnt);
+				if(data1->sor_flg == 0){
+					int packet_size = data1->pcap_hdr.caplen + sizeof(PacketCnt);
 					pcnt = (PacketCnt *)malloc(packet_size);
-					memcpy(&(pcnt->pcap_hdr), &(data->pcap_hdr), sizeof(struct pcap_pkthdr));
-					memcpy(pcnt->pcap_pkt, data->pcap_pkt , pcnt->pcap_hdr.caplen);
+					memcpy(&(pcnt->pcap_hdr), &(data1->pcap_hdr), sizeof(struct pcap_pkthdr));
+					memcpy(pcnt->pcap_pkt, data1->pcap_pkt , pcnt->pcap_hdr.caplen);
 
 					PacketCnt *packet_cnt;			// pointer to libpcap packet structure(w/ header)
 					unsigned char* packet;			// ponter to packet binary
@@ -75,7 +77,8 @@ void* routeFunction_Recv(void * param)
 					l4_header = l3_header + ip_header->ip_hl*4; //TCP/UDP header
 
 					if(protocol == IPPROTO_TCP){
-						//PACKET_DEBUG(RED cout << "TCP Packet!" << endl ;RESET);
+						cout << data1->packet_id << endl;
+						PACKET_DEBUG(RED cout << "TCP Packet!" << endl ;RESET);
 						tcp_header = (struct tcphdr *)l4_header;
 						src_port = ntohs(tcp_header->source);
 						dst_port = ntohs(tcp_header->dest);
@@ -88,22 +91,29 @@ void* routeFunction_Recv(void * param)
 						rst = tcp_header->rst;
 						l4_header_size = tcp_header->doff*4;
 						content_size = packet_size - l2_header_size - l3_header_size - l4_header_size;
-					} else if(protocol == IPPROTO_UDP){
-						//PACKET_DEBUG(RED cout << "UDP Packet!" << endl ;RESET);
-						struct udphdr* udp_header = (struct udphdr *)l4_header;
-						src_port = ntohs(udp_header->source);
-						dst_port = ntohs(udp_header->dest);
-						l4_header_size = ntohs(udp_header->len);
-						content_size = packet_size - ip_header->ip_hl*4 - sizeof(struct udphdr);
-					} else{
-						//PACKET_DEBUG(RED	cout << "This is not TCP/UDP packet!!" <<endl; RESET);
-						src_port = 0;
-						dst_port = 0;
-						content_size = 0;
+						cout << "before SYN: " << syn << endl;
+						cout << "before ACK: " << ack << endl;
+						if(syn && !ack){
+							cout << "STREAM STAT-------------------" << endl;
+							sleep(1);
+						}
+
+						if(data1->packet_id == 784 || data1->packet_id == 785 || data1->packet_id == 786){
+							cout << "caplen" << data->pcap_hdr.caplen << endl;
+							cout << "before pcap src_ip: " << inet_ntoa(src_ip) << endl;
+							cout << "before pcap dst ip: " << inet_ntoa(dst_ip) << endl;
+							cout <<"before src_port :" << src_port << endl;
+							cout <<"before dst_port :" << dst_port << endl;
+
+							for(int i=0; i < 1500; i++){
+								cout << data1->pcap_pkt[i];
+							}
+							sleep(10);
+						if(data1->packet_id == 786){
+							return 0;
+						}
+						}
 					}
-					if(content_size > packet_size_cap){
-						content_size = 0;
-	}
 
 					if(src_port == 80 || dst_port == 80){
 					/*
@@ -119,7 +129,9 @@ void* routeFunction_Recv(void * param)
 						cout << "after pcap src port: " << pkt->GetSrcPort() << endl;
 						cout << "after pcap dst port: " << pkt->GetDstPort() << endl;
 						*/
+
 						cout << "SYN: " << pkt->GetSyn() << endl;
+						cout << "ACK: " << pkt->GetAck() << endl;
 
 						/*
 						for(int i = 0; i < 1400; i++){
@@ -127,14 +139,14 @@ void* routeFunction_Recv(void * param)
 						}
 						*/
 						//cout << "Master start" << endl;
-						master->Proc(pkt);
+//						master->Proc(pkt);
 						//sleep(1);
 						//cout << "Master end" << endl;
 					}
 				}
 					pthread_mutex_lock(&mut);
 
-					pktQ.push(data);
+					pktQ.push(data1);
 				//	cout << "Success queue" << endl;
 					pthread_mutex_unlock(&mut);
 				}
