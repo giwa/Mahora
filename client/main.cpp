@@ -30,10 +30,15 @@ UDPSocket *sock = new UDPSocket(52000);
 void pcap_callback(u_char *userdata, const struct pcap_pkthdr *h, const u_char *p) {
 
 	unsigned char* packet;			// ponter to packet binary
+	unsigned char* packet2;			// ponter to packet binary
 	unsigned char* l3_header;
+	unsigned char* l3_header2;
 	struct ip* ip_header;
+	struct ip* ip_header2;
 	struct in_addr src_ip;
+	struct in_addr src_ip2;
 	struct in_addr dst_ip;
+	struct in_addr dst_ip2;
 	struct timeval timestamp;
 
 	cnt++;
@@ -55,7 +60,8 @@ void pcap_callback(u_char *userdata, const struct pcap_pkthdr *h, const u_char *
 
 	timestamp = data->pcap_hdr.ts;
 	packet = (unsigned char *)malloc(h->caplen);
-	memcpy(packet, data->pcap_pkt, h->caplen);
+	packet2 = (unsigned char *)malloc(h->caplen);
+	//memcpy(packet, data->pcap_pkt, h->caplen);
 
 
 //delete data;
@@ -65,10 +71,12 @@ void pcap_callback(u_char *userdata, const struct pcap_pkthdr *h, const u_char *
 //	cout << "content: "<<  data->pcap_pkt << endl;
 
 	unsigned char* l4_header;		// pointer to L4(TCP/UDP) header
+	unsigned char* l4_header2;		// pointer to L4(TCP/UDP) header
 	unsigned char* content;			// pointer to payload begin
 	unsigned char* l7_content;		// pointer to Layer7 content begin
 
 	unsigned int protocol;			// Transport Protocol(ex: TCP:6)
+	unsigned int protocol2;			// Transport Protocol(ex: TCP:6)
 	bool ack;						// TCP ACK flag
 	bool fin;						// TCP FIN flag
 	bool syn;						// TCP SYN flag
@@ -82,6 +90,7 @@ void pcap_callback(u_char *userdata, const struct pcap_pkthdr *h, const u_char *
 
 	//packet = (unsigned char *)malloc(pcnt->pcap_hdr.caplen);
 	memcpy(packet, pcnt->pcap_pkt, pcnt->pcap_hdr.caplen);
+	memcpy(packet2, pcnt->pcap_pkt, pcnt->pcap_hdr.caplen);
 
 	l3_header = packet + sizeof(struct ether_header); //IP header
 	ip_header = (struct ip *)l3_header;
@@ -90,6 +99,31 @@ void pcap_callback(u_char *userdata, const struct pcap_pkthdr *h, const u_char *
 	protocol = ip_header->ip_p;
 
 	l4_header = l3_header + ip_header->ip_hl*4; //TCP/UDP header
+
+	l3_header2 = packet2 + sizeof(struct ether_header); //IP header
+	ip_header2 = (struct ip *)l3_header2;
+	src_ip2 = ip_header2->ip_src;
+	dst_ip2 = ip_header2->ip_dst;
+	protocol2 = ip_header2->ip_p;
+
+	l4_header2 = l3_header + ip_header->ip_hl*4; //TCP/UDP header
+	if(protocol2 == IPPROTO_TCP){
+	cout << "packet2--------------------------"<< endl;
+		tcp_header = (struct tcphdr *)l4_header;
+		src_port = ntohs(tcp_header->source);
+		dst_port = ntohs(tcp_header->dest);
+		seq_no = ntohl(tcp_header->seq);
+		ack = tcp_header->ack;
+		fin = tcp_header->fin;
+		syn = tcp_header->syn;
+		urg = tcp_header->urg;
+		psh = tcp_header->psh;
+		rst = tcp_header->rst;
+		cout << "SYN: " << syn << endl;
+		cout << "ACK: " << ack << endl;
+		cout << "src_ip2: " << inet_ntoa(src_ip2) << endl;
+		cout << "dst_ip2: " << inet_ntoa(dst_ip2) << endl;
+	}
 
 	if(protocol == IPPROTO_TCP){
 		//PACKET_DEBUG(RED cout << "TCP Packet!" << endl ;RESET);
