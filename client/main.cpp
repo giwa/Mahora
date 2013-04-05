@@ -57,12 +57,6 @@ void pcap_callback(u_char *userdata, const struct pcap_pkthdr *h, const u_char *
 	packet = (unsigned char *)malloc(h->caplen);
 	memcpy(packet, data->pcap_pkt, h->caplen);
 
-	//l3_header = packet  + sizeof(struct ether_header); //IP header
-	//ip_header = (struct ip *)l3_header;
-	//src_ip = ip_header->ip_src;
-	//dst_ip = ip_header->ip_dst;
-//	cout << "src_ip: " << inet_ntoa(src_ip) << endl;
-//	cout << "dst_ip: " << inet_ntoa(dst_ip) << endl;
 
 //delete data;
 
@@ -114,10 +108,17 @@ void pcap_callback(u_char *userdata, const struct pcap_pkthdr *h, const u_char *
 	if(syn && !ack){
 		cout << "STREAM START-----------------" << endl;
 		if(cnt == 785){
+			l3_header = packet  + sizeof(struct ether_header); //IP header
+			ip_header = (struct ip *)l3_header;
+			src_ip = ip_header->ip_src;
+			dst_ip = ip_header->ip_dst;
+			cout << "caplen: " << data->pcap_hdr.caplen  << endl;
+			cout << "src_ip: " << inet_ntoa(src_ip) << endl;
+			cout << "dst_ip: " << inet_ntoa(dst_ip) << endl;
 			for(int i = 0; i < 1500; i++){
 				printf("%c", pcnt->pcap_pkt[i]);
 			}
-		
+			cout << "data-----------------" << endl;
 			cout << "data-----------------" << endl;
 			for(int i = 0; i < 1500; i++){
 				printf("%c", pcnt->pcap_pkt[i]);
